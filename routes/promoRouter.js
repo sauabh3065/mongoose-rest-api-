@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
+const authenticate = require("../authenticate");
 const Promos = require("../models/promotion");
 const promoRouter = express.Router();
 promoRouter.use(bodyParser.json());
@@ -21,7 +21,7 @@ promoRouter
         console.log(err);
       };
   })
-  .post((req, res) => {
+  .post(authenticate.verifyUser,(req, res) => {
     Promos.create(req.body).then((promo) => {
       console.log("promo created", promo);
       res.statusCode = 200;
@@ -32,11 +32,11 @@ promoRouter
         console.log(err);
       };
   })
-  .put((req, res) => {
+  .put(authenticate.verifyUser,(req, res) => {
     res.statusCode = 403;
     res.end("put operation not suppoeted in promo");
   })
-  .delete((req, res) => {
+  .delete(authenticate.verifyUser,(req, res) => {
     Promos.remove({}).then((response) => {
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
@@ -63,11 +63,11 @@ promoRouter
       }
     );
   })
-  .post((req, res) => {
+  .post(authenticate.verifyUser,(req, res) => {
     res.statusCode = 403;
     res.end("POST operation not suppoeted on /dishes" + req.params.promold);
   })
-  .put((req, res) => {
+  .put(authenticate.verifyUser,(req, res) => {
     Promos.findByIdAndUpdate(
       req.params.promoId,
       { $set: req.body },
@@ -83,7 +83,7 @@ promoRouter
       }
     );
   })
-  .delete((req, res) => {
+  .delete(authenticate.verifyUser,(req, res) => {
     Promos.findByIdAndDelete(req.params.promoId).then(
       (resp) => {
         res.statusCode = 200;
