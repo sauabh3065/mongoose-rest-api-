@@ -6,14 +6,14 @@ var passport = require("passport");
 const router = express.Router();
 const authenticate = require("../authenticate");
 
-
 /* GET users listing. */
 router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
 
 router.post("/signup", (req, res, next) => {
-  User.register(
+  console.log("yesss");
+    User.register(
     new User({ username: req.body.username }),
     req.body.password,
     (err, user) => {
@@ -22,10 +22,25 @@ router.post("/signup", (req, res, next) => {
         res.setHeader("Content-Type", "application/json");
         res.json({ err: err });
       } else {
-        passport.authenticate("local")(req, res, () => {
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json({ success: true, status: "Registration Successful!" });
+        if (req.body.firstname) {
+          user.firstname = req.body.firstname;
+          console.log(req.body);
+        }
+        if (req.body.lastname) {
+          user.lastname = req.body.lastname;
+        }
+        user.save((err, user) => {
+          if(err) {
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.json({ err: err });
+            return;
+          }
+          passport.authenticate("local")(req, res, () => {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json({ success: true, status: "Registration Successful!" });
+          });
         });
       }
     }
