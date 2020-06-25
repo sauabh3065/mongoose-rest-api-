@@ -23,7 +23,7 @@ opts.secretOrKey = config.secretKey;
 exports.jwtPasspport = passport.use(
   new JwtStrategy(opts, (jwt_payload, done) => {
     console.log("jwt payLoad:", jwt_payload);
-    User.findOne({ _id: jwt_payload._id}, (err, user) => {
+    User.findOne({ _id: jwt_payload._id }, (err, user) => {
       if (err) {
         return done(err, false); //err occurs
       } else if (user) {
@@ -35,4 +35,14 @@ exports.jwtPasspport = passport.use(
   })
 );
 
-exports.verifyUser = passport.authenticate('jwt',{session : false});
+
+
+exports.verifyAdmin = (req, res, next) => {
+  if (req.body.admin !== true) {
+    return next(err);
+  } else {
+    return next();
+  }
+};
+
+exports.verifyUser = passport.authenticate("jwt", { session: false });

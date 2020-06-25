@@ -22,7 +22,7 @@ leaderRouter
         console.log(err);
       };
   })
-  .post(authenticate.verifyUser,(req, res) => {
+  .post(authenticate.verifyUser, (req, res) => {
     Leaders.create(req.body).then((leader) => {
       console.log("leader created", leader);
       res.statusCode = 200;
@@ -33,11 +33,11 @@ leaderRouter
         console.log(err);
       };
   })
-  .put(authenticate.verifyUser,(req, res) => {
+  .put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end("put operation not suppoeted in leader");
   })
-  .delete(authenticate.verifyUser,(req, res) => {
+  .delete(authenticate.verifyUser, (req, res) => {
     Leaders.remove({}).then((response) => {
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
@@ -64,11 +64,11 @@ leaderRouter
       }
     );
   })
-  .post(authenticate.verifyUser,(req, res) => {
+  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
     res.statusCode = 403;
-    res.end("POST operation not suppoeted on /dishes" + req.params.promold);
+    res.end("POST operation not suppoeted on /leaders" + req.params.promold);
   })
-  .put(authenticate.verifyUser,(req, res) => {
+  .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
     Leaders.findByIdAndUpdate(
       req.params.leaderId,
       { $set: req.body },
@@ -84,7 +84,7 @@ leaderRouter
       }
     );
   })
-  .delete(authenticate.verifyUser,(req, res) => {
+  .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
     Leaders.findByIdAndDelete(req.params.leaderId).then(
       (resp) => {
         res.statusCode = 200;
